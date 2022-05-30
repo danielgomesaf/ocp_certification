@@ -335,3 +335,31 @@ System.out.println("ONE ONE ELEVEN");
 Ao final, o valor "ONE ONE ELEVEN" é printado  no console.
 
 -------------------------------------------------------------------------------------------------------
+
+A classe String possui dois métodos replace, sobrescritos:
+
+1. public String replace(char oldChar, char newChar) {}:
+
+Retorna a String resultante da substituição de todas as ocorrências de um char antigo nessa String por um novo char. Se nenhuma alteração
+for feita, então a String source é retornada.
+Ex:
+
+"Java".replace('a', 'A') --> retorna um novo objeto String "JAvA".
+
+"Java".replace('a', 'a') --> retorna a String source "Java", ou seja, não houve alterações.
+
+"Java".replace('m', "M") --> retorna a String source "Java", ou seja, não houve alterações.
+
+
+2. public String replace(CharSequence target, CharSequence replacement) {}:
+
+Retorna um novo objeto String após substituir cada substring da String source que seja compatível com o literal passado como parâmetro em
+target por um novo literal que é passado como parâmetro replacement.
+
+"Java".replace("a", "A") --> Retorna uma nova String "JAvA".
+
+"Java".replace("a", "a") --> Retorna um novo objeto String "Java", substituindo "a" por "a".
+
+"Java".replace("m", "M") --> Retorna a String source "Java", ou seja, nenhuma alteração é feita.
+
+-------------------------------------------------------------------------------------------------------     
