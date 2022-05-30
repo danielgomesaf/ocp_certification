@@ -1,0 +1,193 @@
+O formato do comando java relacionado para módulos é:
+
+java [options] -m <module>[/<mainclass>] [args...]
+
+java [options] --module <module>[/<mainclass>] [args...] - (para executar a main class contida em um módulo)     
+
+--module or -m: Corresponde ao nome do módulo. 
+-m deve ser a última option usada no comando. 
+-m é seguido do nome do módulo, e então por uma mainclass opcional e em seguida por quaisquer argumentos 
+inline. Se o módulo estiver contido no jar e o atributo -MainClass estiver setado na criação do jar, 
+então passar passar o classname depois do -m <module> é opcional.
+
+Abaixo estão as options relacionadas a módulos mais importantes do comando java:
+
+--module-path or -p: Representa uma lista de diretórios contendo módulos ou caminhos para módulos 
+individuais. Para múltiplos valores, são utilizados separadores específicos dos Sistemas Operacionais 
+(; no Windows e : no Linux/Mac).
+
+Ex:
+java -p out;singlemodule;connector.jar // representa um caminho modular que contém todos os módulos 
+                                       // dentro do diretório 'out', um módulo individual expandido
+                                       // 'singlemodule' e um jar modular 'connector.jar'
+
+------------------------------------------------------------------------------------------------------
+
+O formato do comando javac é:
+
+javac <options> <source files>
+
+Abaixo estão listadas as options relacionadas a módulos mais importantes do comando javac:
+
+--module-source-path <module-source-path> // Especifica onde encontrar input source files para múltiplos 
+                                          // módulos.
+
+--module <module-name>, -m <module-name> // Compila apenas o módulo especificado. Múltiplos módulos são 
+                                         // separados por vírgula.
+
+-d <directory> // Especifica onde colocar arquivos .class gerados. A estrutura gerada para esses 
+               // arquivos .class serão nomeadas de acordo com os pacotes onde o arquivo .java 
+               // se encontra
+
+--module-path <path>, -p <path> // Especifica onde encontrar os módulos e aplicações 
+                                // compiladas/empacotadas. Representa a lista de diretórios contendo 
+                                // módulos ou paths para módulos individuais. Para múltiplos valores, 
+                                // são utilizados separadores específicos dos Sistemas Operacionais 
+                                // (; on Windows and : on Linux/Mac).
+
+------------------------------------------------------------------------------------------------------
+
+Na JDK modular, módulos começando com "java." são conhecidos como módulos standard. Módulos non-standard 
+não podem começar com "java.".
+
+Um módulo agregador (aggregator) agrupa e re-exporta o conteúdo de outros módulos, mas não adiciona 
+conteúdos próprios.
+
+Ex:
+Se descrevermos o módulo java.se usando o comando abaixo:
+
+C:\>java --describe-module java.se
+
+A resposta será:
+
+java.se@11.0.3
+requires java.xml.crypto transitive
+requires java.datatransfer transitive
+requires java.naming transitive
+requires java.management transitive
+requires java.instrument transitive
+requires java.sql transitive
+requires java.xml transitive
+requires java.security.sasl transitive
+requires java.base mandated
+requires java.prefs transitive
+requires java.security.jgss transitive
+requires java.transaction.xa transitive
+requires java.desktop transitive
+requires java.sql.rowset transitive
+requires java.management.rmi transitive
+requires java.rmi transitive
+requires java.net.http transitive
+requires java.compiler transitive
+requires java.logging transitive
+requires java.scripting transitive
+
+Ou seja, ele apenas re-exporta outros módulos standard, portanto é um módulo aggregator.
+
+------------------------------------------------------------------------------------------------------
+
+--describe-module or -d: O comando deve ser seguido pelo nome do módulo, e é responsável por descrever 
+o módulo nomeado. Se passarmos o nome de um módulo de sistema (system module), ele será descrito 
+normalmente.
+
+Ex:
+java -d java.sql // java.sql é um system module
+
+Mas se usarmos o comando para descrever módulos de aplicação (application modules), o caminho do módulo 
+precisa ser especificado.
+Ex:
+java -p moduloDeAplicacao -d modulo1 // moduloDeAplicacao seria o caminho do módulo e modulo1 o nome 
+ou
+java -p moduloDeAplicacao\moduloDeAplicacao.jar -d modulo1 // moduloDeAplicacao/moduloDeAplicacao.jar 
+                                                           // seria o caminho do jar onde o módulo está 
+                                                           // contido e modulo1 o nome
+
+------------------------------------------------------------------------------------------------------
+
+Um módulo é um conjunto de pacotes.
+
+------------------------------------------------------------------------------------------------------
+
+Apenas uma declaração de módulo é permitida por arquivo.
+
+------------------------------------------------------------------------------------------------------
+
+Não é permitido usar a palavra-chave extends em módulos.
+
+------------------------------------------------------------------------------------------------------
+
+Módulos não podem referenciar pacotes vazios. Causa erro de compilação.
+
+------------------------------------------------------------------------------------------------------
+
+Para declaração de módulos apenas o modificador de acesso open é permitido.
+
+------------------------------------------------------------------------------------------------------
+
+declarações package não são permitidas em arquivos module-info.java
+
+------------------------------------------------------------------------------------------------------
+
+É possível utilizar imports em módulos na mesma estrutura que usamos em classes java, porém, no corpo do
+módulo deverá ter uma referência para o módulo que contém o pacote que está sendo importado (se não for
+algum pacote que já pertença ao módulo java.base que vem importado por padrão). Essa referência é feita
+usando requires ou requires transitive, nunca import ou imports.
+
+Ex:
+import java.sql.*; // java.sql não está presente no java.base
+ 
+module com.data.sort {
+    requires java.sql; // usamos o requires para podermos importar as classes do java.sql
+}
+
+------------------------------------------------------------------------------------------------------
+
+requires transitive é uma diretiva válida em módulos. É utilizada para leitura implícita, o que 
+significa especificar que um módulo que por ventura leia um módulo possa também ler suas dependências.
+
+Ex:
+Se o módulo C tem a diretiva "requires B" (dizemos que "C lê B"), e o módulo B tem a diretiva 
+"requires transitive A" (dizemos que "B lê A"), então C também lerá A.
+
+------------------------------------------------------------------------------------------------------
+
+Todas as classes em uma estrutura de módulos devem fazer parte de um pacote que não seja o pacote 
+default.
+
+------------------------------------------------------------------------------------------------------
+
+Compilação multi-módulos só pode ser usada caso o nome do módulo seja igual ao nome do diretório em que 
+o arquivo module-info.java se encontre.
+
+------------------------------------------------------------------------------------------------------
+
+O nome de um arquivo de módulo deve ser module-info.java
+
+O arquivo de módulo não pode ser vazio. Deve conter ao menos o nome do módulo.
+Ex:
+// module-info.java
+module mymodule {}
+
+------------------------------------------------------------------------------------------------------
+Para recuperar a lista de todos os system modules, o comando abaixo é utilizado:
+
+java --list-modules
+
+------------------------------------------------------------------------------------------------------
+
+Quando múltiplos módulos com o mesmo nome estão em jars diferentes no module path, o primeiro módulo é 
+selecionado e o resto dos módulos com o mesmo nome são ignorados. 
+
+Ex:
+Os jars secret_two.jar e secret_one.jar possuem cada um um módulo de nome secret. Ao executar o 
+comando abaixo, apenas o módulo contido em secret_two.jar será executado.
+
+java -p jars\jar2\secret_two.jar;jars\jar1\secret_one.jar -m secret/com.udayankhattry.ocp1.Secret
+
+------------------------------------------------------------------------------------------------------
+O comando --show-module-resolution mostra o output module resolution output durante a inicialização do 
+mesmo.
+
+------------------------------------------------------------------------------------------------------
+
+a JDK 11 não oferece mais um JRE.

@@ -1,0 +1,135 @@
+RuntimeException É UMA SUBCLASSE DE Exception
+
+IllegalArgumentException É UMA SUBCLASSE DE RuntimeException.
+
+FileNotFoundException É UMA SUBCLASSE DE Exception.
+
+IOException É UMA SUBCLASSE DE Exception.
+
+------------------------------------------------------------------------------------------------------------------
+
+import java.io.FileNotFoundException;
+ 
+interface Printer {
+    default void print() throws FileNotFoundException {
+        System.out.println("PRINTER");
+    }
+}
+ 
+class FilePrinter implements Printer {
+    public void print() {
+        System.out.println("FILE PRINTER");
+    }
+}
+ 
+public class Test {
+    public static void main(String[] args) {
+        Printer p = new FilePrinter(); 
+        p.print(); //Line n3
+        var fp = new FilePrinter(); 
+        fp.print(); //Line n5
+    }
+}
+
+De acordo com as regras de sobrescrita, se um método de uma super classe/interface lança uma checked exception, 
+então o método da sub-classe/classe que implementa a interface tem as seguintes opções:
+
+1 - Pode não lançar nenhuma checked exception;
+
+2 - Pode lançar a mesma checked exception lançada pelo método da classe pai/interface;
+
+3 - Pode lançar uma checked exception que seja sub classe da exception lançada pelo método da classe pai/interface;
+
+4 - Não pode lançar checked exceptions que sejam super classes da exception lançada pelo método da classe 
+pai/interface;
+
+5 - Não pode lançar exceptions não relacionadas com a checked exception lançada pelo método da classe pai/interface;
+
+6 - Pode lançar quaisquer RuntimeExceptions ou Errors;
+
+Na Line n3, o método print() é invocado na referência 'p', que é do tipo "Printer", portanto, o método print() que 
+será executado será o contido na interface. Uma vez que esse método lança uma exception FileNotFoundException e o 
+método main() não relança a exception ou trata em um try/catch, um erro de compilação irá acontecer.
+
+------------------------------------------------------------------------------------------------------------------
+
+Caso um return esteja presente dentro de uma estrutura try/catch apenas no bloco catch ou apenas no bloco try, 
+códigos abaixo do bloco não serão marcados como unreachable pelo compilador. Caso o return esteja presente nos
+dois blocos, códigos abaixo do bloco try/catch serão marcados como unreachable.
+Ex:
+
+try {
+	// qualquer código
+	return "";
+} catch (Exception e) {
+	return e.getMessage();
+}
+
+System.out.println("Código Unreachable"); // código inalcançável
+
+------------------------------------------------------------------------------------------------------------------
+
+Rotinas internas do Java lidam com o lançamento de null como exception lançando uma NullPointerException.
+Ex:
+
+public class Test {
+	public static void main(String[] args) throws Exception {
+		Exception e = null;
+		
+		throw null; // Não dá erro de compilação e internamente o Java lança uma NullPointerException
+	}
+}
+
+------------------------------------------------------------------------------------------------------------------
+
+Em Java não podemos usar catch em uma checked exception se essa exception não for lançada pelo código localizado dentro de um bloco try. Um erro de
+compilação é gerado.
+
+Porém, podemos usar catch(Exception e) {} sem erros de compilação.
+
+Ex:
+
+public class Test {
+    public static void main(String[] args) {
+        try {
+            // lança ArrayIndexOutOfBoundsException, uma RuntimeException.
+            System.out.println(args[1].length());
+
+        } catch (RuntimeException ex) {
+            System.out.println("ONE");
+        } catch (FileNotFoundException ex) { 
+            // FileNotFoundException é uma checked exception que não é lançada pelo bloco try, logo um erro de 
+            // compilação é gerado
+            
+            System.out.println("TWO");
+        }
+
+        System.out.println("THREE");
+    }
+}
+
+------------------------------------------------------------------------------------------------------------------
+
+Em estruturas multi-catch,  não podemos especificar múltiplas exceções que estejam relacionadas entre si em uma 
+estrutura de herança de multilevel.
+Ex:
+
+try {
+	// qualquer código
+}
+catch (NullPointerException | RuntimeException ex) {
+	// NullPointerException herda de RuntimeException, portanto, as duas não podem ser usadas simultaneamente em um 
+    // multi-catch
+}
+
+------------------------------------------------------------------------------------------------------------------
+
+ClassCastException extends RuntimeException (unchecked exception),
+
+FileNotFoundException extends IOException, IOException extends Exception (checked exception);
+
+ExceptionInInitializerError é uma subclasse da família de Error e só pode ser lançado de um bloco inicializado estaticamente;
+
+RuntimeException e todas as suas subclasses são unchecked exceptions;
+
+------------------------------------------------------------------------------------------------------------------

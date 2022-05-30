@@ -1,0 +1,50 @@
+Variáveis contidas em expressões Lambda não podem redeclarar variáveis definidas em um escopo local.
+
+Ex:
+
+interface Operation {
+	void test(int x, int y);
+}
+
+class TestLambda {
+	public static void main(String[] args) {
+		int x = 10;
+		int y = 10;
+
+		// Ocorre um erro de compilação, pois os nomes das variáveis contidas na declaração da expressão 
+        // lambda são os mesmos das variáveis de escopo local do método main()
+        Operation o1 = (x, y) -> x * y;
+	}
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Ao declarar um Predicate com o uso da palavra-chave "var", parênteses devem ser usados.
+
+Ex:
+Predicate pred = (var p) -> p.length > 0 // correto
+Predicate pred = var p -> p.length > 0   // errado
+
+-------------------------------------------------------------------------------------------------------
+
+Expressões lambda não podem ser passadas diretamente para o método println(Object), uma vez que Object 
+não é uma interface funcional. Lambdas podem ser atribuídas a variáveis static, variáveis de instância, 
+variáveis locais, parâmetros em métodos ou tipos de retorno.
+
+Ex:
+
+interface Operator<T> {
+    public abstract T operation(T t1, T t2);
+}
+ 
+public class Test {
+    public static void main(String[] args) {
+         // podemos atribuir a expressão lambda a uma variável local e utilizarmos essa variável no 
+         // método println(Object)
+         Operation<String> op = (s1, s2) -> s1 + s2;
+	
+        // passar um lambda direto aqui daria erro de compilação);
+	    System.out.println(op.operation("string1", "string2");
+    }
+}
+

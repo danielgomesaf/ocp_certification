@@ -1,0 +1,142 @@
+Dado o cenário, as variáveis m e n são implicitamente tipadas como inteiros:
+var m = 10;
+var n = 20;
+
+Logo:
+
+int sum1 = m + n;   // sem erros
+long sum2 = m + n   // sem erros
+var sum3 = m + n    // sem erros
+short sum4 = m + n  // erro de compilação, um cast explícito deve ser feito na soma para poder armazenar 
+                    // em short
+byte sum4 = m + n   // erro de compilação, um cast explícito deve ser feito na soma para poder armazenar 
+                    // em byte
+
+-------------------------------------------------------------------------------------------------------
+
+Uma variavel int pode armazenar um char, porém, ela não armazenará o valor do char em si, mas sim o 
+número que esse char representa na tabela ASCII.
+Ex:
+
+int c = 'm'; // armazena o valor 109
+
+-------------------------------------------------------------------------------------------------------
+
+A variável de tipo byte armazena valores entre -128 e 127.
+
+-------------------------------------------------------------------------------------------------------
+
+Quando passamos uma variável de tipo primitivo como parâmetro e alteramos o seu valor dentro do método, o 
+valor original da variável é mantido. 
+
+Em caso de objetos, caso passemos um objeto por parâmetro e alteremos alguma de suas propriedades no 
+método, essa propriedade será alterada no objeto original.
+
+-------------------------------------------------------------------------------------------------------
+
+Se possuirmos uma variável final de um tipo primitivo e o valor da mesma estiver dentro do range, então a
+variável poderá ser convertida implicitamente caso tentemos armazenar o seu valor dentro de uma variável 
+com range menor.
+Ex:
+
+final int i = 10;
+short s3 = i; // implicitamente convertido para short
+
+-------------------------------------------------------------------------------------------------------
+
+Erros de compilação em variáveis do tipo de referência não inicializadas ocorrem na utilização da variável
+não na declaração.
+Ex:
+
+String msg;
+System.out.println(msg); // O erro ocorre nessa linha
+
+-------------------------------------------------------------------------------------------------------
+
+Para fins de legibilidade, underscore (_) pode ser usado para separar valores numéricos. Isso é uma 
+ferramenta útil em casos de representação de números muito grandes, como números de cartão de crédito 
+(1234_7654_9876_0987). Múltiplos underscores são permitidos entre dígitos.
+
+Underscores não podem ser usados no ínicio e no final de dígitos.
+Ex:
+
+1. int x = 5____0; // válido, armazena o valor 50
+
+2. int y = ____50; // inválido, underscore não pode ser usado no início de dígitos
+
+3. int z = 50____; // inválido, underscore não pode ser usado no final de dígitos
+
+4. float f = 123.76_86f; // válido, armazena 123.7686
+
+5. double d = 1_2_3_4; // válido, armazena 1234.0
+
+-------------------------------------------------------------------------------------------------------
+
+Variáveis de instância de classes que contém tipos de referência são inicializadas implicitamente com 
+null.
+Ex:
+
+public class Test {
+    private static int [] arr; // valor implícito null   
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    public static void main(String [] args) {
+        var x = 7.85;               //Line n1
+        var y = 5.25f;              //Line n2
+        var a = (int)x + (int)y;    //Line n3
+        var b = (int)(x + y);       //Line n4
+        System.out.println(a + b);
+    }
+}
+
+Resolvemos a expressão da seguinte forma:
+
+Na Line n1, x é inferido para o tipo double com valor 7.85.
+Na Line n2, y é inferido para o tipo float, como valor 5.25f.
+
+Na Line n3:
+var a = (int)x + (int)y;
+var a = (int) 7.85 + (int) 5.25;
+
+var a = 7 + 5; // realizamos a conversão dos valores para int, sempre arredondando para baixo.
+
+var a = 12; // infere o valor 12 para um tipo inteiro.
+
+Na Line n4:
+var b = (int)(x + y);
+
+var b = (int) (7.85 + 5.25); // realiza-se a soma dos valores primeiro, uma vez que está entre parênteses
+
+var b = (int) (13.10); // realiza-se a conversão da soma para o tipo inteiro, arredondando para baixo.
+
+var b = 13; // infere o valor 13 para um tipo inteiro
+
+System.out.println(a + b); // printa 25 no console.
+
+-------------------------------------------------------------------------------------------------------
+
+O compilador aplica o casting implícito apenas em operadores de prefixo(++i, --i), sufixo(i++, i--) ou operadores 
+de atribuição simplificados (+=, -=, *=). Do contrário, receberemos um erro de compilação.
+
+Ex:
+
+public class Test {
+	public static void main(String[] args) {
+		byte b = 100;
+
+		// erro de compilação, o compilador entende o resultado de b - 1 como int
+        b = b - 1; 
+        
+		// compila normalmente, já que o compilador aplica um casting implícito, transformando a 
+	    // operação em b = (byte) (b - 1);
+        --b;  
+	}
+}
+
+-------------------------------------------------------------------------------------------------------
+

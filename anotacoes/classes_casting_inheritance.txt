@@ -1,0 +1,164 @@
+Nomes de classes devem seguir o padrão de nomenclatura dos identificadores:
+
+1 - Podem começar com $, letras ou _(underscore)
+2 - Os caracteres após o primeiro podem ser letras, dígitos, $ ou _
+
+-------------------------------------------------------------------------------------------------------------------
+
+Métodos compare(x, y) das Wrapper classes se comportam da seguinte forma:
+
+1 - Character, Byte e Short: O método compare(x, y) retorna a subtração dos valores
+
+Ex:
+Character.compare('m', 'M'); // retorna a subtração do valor correspondente aos chars na tabela ASCII, nesse caso
+			     // 109 - 77
+
+2 - Integer e Long: O método compare(x, y) retorna -1 se x < y, 1 se x > y e 0 se x == y
+Ex:
+
+Integer.compare(1, 2); // retorna -1, já que 1 < 2
+
+3 - Float e Double: A lógica é semelhante a de Integer e Long, porém mais complexa por baixo dos panos devido aos
+números de ponto flutuante.
+
+4 - Boolean: O método compare(x, y) retorna 0 se x == y, 1 se x = true e -1 se x = false
+
+-------------------------------------------------------------------------------------------------------------------
+
+Modificadores de acesso permitidos para classes: public, abstract, final
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+interface Rideable {
+    void ride(String name);
+}
+ 
+class Animal {}
+ 
+class Horse extends Animal implements Rideable {
+    public void ride(String name) {
+        System.out.println(name.toUpperCase() + " IS RIDING THE HORSE");
+    }
+}
+ 
+public class Test {
+    public static void main(String[] args) {
+        Animal horse = new Horse();
+        /*INSERT*/
+    }
+}
+
+Para que essa classe compile com sucesso, uma das opções abaixo pode ser utilizada para substituir /*INSERT*/:
+
+((Horse)horse).ride("Emma"); ✓
+
+A variável 'horse' refere a uma instância da classe Horse e ela é casteada para o tipo Horse. Como a classe Horse 
+tem o método ride(String), ele será invocado em tempo de execução e irá printar um resultado válido.
+
+((Rideable)horse).ride("emma"); ✓
+
+A variável 'horse' refere a uma instância da classe Horse e ela é casteada para o tipo Rideable, que é um supertipo 
+de Horse. Como a interface Rideable tem o método ride(String), o método contido na classe Horse será invocado, uma 
+vez que é o tipo da instância.
+
+((Rideable)(Horse)horse).ride("EMMA"); ✓
+
+A variável 'horse' refere a uma instância da classe Horse e ela é casteada para o tipo Horse e depois casteada 
+novamente para o tipo Rideable.
+
+((Horse)(Rideable)horse).ride("emma"); ✓
+
+A variável 'horse' refere a uma instância da classe Horse e ela é casteada para o tipo Rideable, que é um supertipo 
+de Horse e logo após é casteada novamente para o tipo Horse.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+import java.util.ArrayList;
+import java.util.List;
+ 
+public class Test {
+    public static void main(String [] args) {
+        List<Integer> list = new ArrayList<Integer>();
+ 
+        list.add(27);
+        list.add(27);
+ 
+        list.add(227);
+        list.add(227);
+ 
+        System.out.println(list.get(0) == list.get(1));
+        System.out.println(list.get(2) == list.get(3));
+    }
+}
+
+Teremos printado ao console os valores true, para a primeira comparação e false para a segunda. A explicação é a 
+seguinte:
+
+Quando instâncias das classes Wrapper abaixo são criadas via auto-boxing, os valores serão os mesmos se e apenas se 
+os valores primitivos usados na criação forem iguais:
+
+As classes são:
+
+Boolean, Byte, Character (de \u0000 até \u007f, ou seja, 7f igual a 127), Short e Integer (de -128 até 127).
+
+No cenário acima, na primeira comparação temos o valor 27 criado via auto-boxing em uma classe Wrapper para ser 
+armazenado na lista. Portanto ao compararmos list.get(0) == list.get(1), temos um resultado true.
+
+Na segunda comparação, temos o valor 227 criado via auto-boxing em uma classe Wrapper para ser armazenado na lista. 
+Como esse valor é acima de 127, dois objetos diferentes são criados na memória HEAP, portanto, ao tentarmos 
+comparar com o operador ==, recebemos o valor false.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o exemplo abaixo:
+
+class Base {
+	static void print() {
+		System.out.println("BASE");
+	}
+}
+
+class Derived extends Base {
+	static void print() {
+		System.out.println("DERIVED");
+	}
+}
+
+public class Test {
+	public static void main(String[] args) {
+		Base b = null;
+		Derived d = (Derived) b;
+		d.print();
+	}
+}
+
+A variável de referência 'b' é do tipo Base, portanto "(Derived) b" não causa erros de compilação. Também não haverá erros de execução do tipo 
+ClassCastException, uma vez que b é nulo. Se b estivesse fazendo referência a uma instância da classe Base (Base b = new Base();), a linha "(Derived) b"
+iria lançar uma ClassCastException.
+
+d.print() nesse caso também não lança NullPointerException, uma vez que o método é estático, portanto, não é necessária uma instância do objeto para que
+ele seja chamado.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Um objeto Integer é imutável, portanto, ao alterar um valor de um objeto Integer, um novo objeto Integer será criado e armazenado em um novo espaço de memória.
+
+Ex:
+
+List<Integer> l = new ArrayList<>();
+
+// cria um Integer em um espaço de memória x
+l.add(new Integer(10)); 
+
+// recupera o integer criado e armazena numa variável
+Integer i = l.get(0); 
+
+// cria um novo objeto integer na memória HEAP e a variável i aponta para esse novo espaço de memória e o Integer 
+// na lista fica com o mesmo valor, pois está apontando para o espaço de memória antigo
+i++;
+
+---------------------------------------------------

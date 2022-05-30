@@ -1,0 +1,144 @@
+Se uma classe não possuir nenhum construtor definido, o compilador adiciona um construtor default no formato abaixo:
+Ex:
+
+NomeDaClasse() {super();}
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o exemplo abaixo:
+
+class Pessoa {
+	String name = "Daniel";
+}
+
+class TestePessoa {
+	public static void main(String[] args) {
+		// é criado um objeto pessoa e uma variável nome é inicializada com o valor "Daniel";
+		Pessoa pessoa = new Pessoa(); 
+
+		// o valor "Daniel" é printado no console
+		System.out.println(pessoa.nome); 
+
+		// invocado o método mudarNome(), passando a pessoa criada como parâmetro. Nesse momento o valor da 
+        // variável pessoa é copiado para o parâmetro, que aponta para o mesmo objeto da variável local "pessoa" em 
+        // memória
+        mudarNome(pessoa); 
+		
+        // o valor de pessoa.nome nesse ponto do código ainda é "Daniel", que é printado em console.
+        System.out.println(pessoa.nome); 
+	}
+
+	public static void mudarNome(Pessoa p) {
+		// um novo objeto Pessoa é criado, e a variável de parâmetro "p" passa a apontar para essa nova instância 
+        // criada. A variável pessoa do método main() ainda mantém o seu apontamento para a instância criada na 
+        // primeira linha do método main()
+		p = new Pessoa();
+		
+        // o valor "Gomes" é assinalado para a variável de instância nome pertencente a instância criada e 
+        // armazenada em "p", sem modificar a variável pertencente ao objeto pessoa contido no método main(), 
+        // que se mantém "Daniel" 
+        p.nome = "Gomes"; 
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o exemplo:
+
+class Base {
+	int i = 1000;
+	
+	Base() {
+		// O compilador adiciona nessa linha uma chamada super(); para o construtor no-argument da classe Object. 
+        // Após a finalização da execução do construtor no-argument da classe Object, o controle do programa é 
+        // retornado para o construtor da classe Base. Antes que qualquer outra instrução dentro do construtor seja 
+        // executada, a atribuição de valores das variáveis de instância (se presentes) acontecem. Nesse caso, o 
+        // valor 1000 é atribuído à variável i da classe Base
+		
+		// Nesse ponto será executado o método Base() presente na classe Derived, uma vez que a classe Derived, 
+        // filha da classe Base, está sobrescrevendo esse método, e a escolha de qual método executar é decidida em 
+        // tempo de execução baseado na instância, que nesse caso, conforme declarado no método main() da classe 
+        // TestDerived, pertence à classe Derived.
+        Base();
+    }
+
+	void Base() {
+		System.out.print(i);
+	}
+}
+
+class Derived extends Base {
+	int i = 2000;
+
+	Derived() {
+		// Após o construtor da classe Base finalizar a sua execução, o controle do programa é retornado para o 
+        // construtor da classe Derived. Nesse ponto, antes de qualquer execução de instruções do construtor, é 
+        // executada a atribuição de valores (se presentes) das variável de instância da classe Derived. Nesse 
+        // caso, o valor 2000 é atribuído à variável i da classe Derived.
+		// Após isso o construtor no-argument da classe Derived é finalizado e o controle é retornado para a classe 
+        // TestDerived, que finaliza a execução do programa.
+	}
+
+	void Base() {
+		// Ao executarmos essa linha, a variável i referenciada será a declarada dentro da classe Derived, que 
+        // ainda está com o valor 0, já que a execução do construtor da classe Base ainda não finalizou, logo, a 
+        // variável de instância da classe Derived ainda não teve sua atribuição realizada. Portanto, o valor 
+        // printado no console será 0
+        System.out.print(i); 
+    }
+}
+
+class TestDerived {
+	public static void main (String[] args) {
+		// O construtor da classe Derived é invocado. Nesse ponto, a variável de instância das classes Derived e 
+        // Base são declaradas e o valor inicial de 0 é atribuido a elas. O compilador adiciona no construtor da 
+        // classe Derived uma chamada super(); como primeira linha dentro do construtor, ou seja, a chamada é 
+        // direcionada para o construtor no-argument da classe Base.
+        new Derived(); 
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------
+
+Construtores não podem usar modificadores final, abstract ou static.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Um construtor só pode ter chamadas a super() ou this(), nunca os dois.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Um construtor de uma classe filha sempre chama o construtor da classe pai. Se não for chamado explicitamente, é 
+chamado implicitamente.
+
+Ex:
+
+class Parent {
+
+	Parent(int i) {
+		// chama o construtor de Object implicitamente
+	}
+
+}
+
+class Child {
+	Child(int i) {
+		// chama o construtor de Parent(int i) explicitamente
+	}
+}
+
+-------------------------------------------------------------------------------------------------------------------
+
+super.super em java causa erro de compilação.
+Ex:
+
+super.super.open(); // Erro
+
+-------------------------------------------------------------------------------------------------------------------
+
+Não é possível usar cast explícito na keyword super.
+Ex:
+
+((Lock)super).open(); // Erro de compilação
+
+-------------------------------------------------------------------------------------------------------------------

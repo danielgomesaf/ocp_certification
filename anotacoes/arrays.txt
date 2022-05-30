@@ -1,0 +1,92 @@
+Um array pode ser criado com tamanho 0 sem erros de compilação, porém não conseguiremos acessar quaisquer 
+índices desse array sem receber uma ArrayIndexOutOfBoundsException.
+Ex:
+
+public class Test {
+	public static void main (String[] args) {
+		byte[] arr = new byte[0]; // declaração válida, é um array de tamanho 0
+		System.out.println(arr[0]) // ArrayIndexOutOfBounds é lançada, não existe um índice 0 no array.
+	}
+}
+
+---------------------------------------------------------------------------------------------------------
+
+Arrays.mismatch(arr1, arr2) recebe como parâmetro dois arrays de um mesmo tipo. O método encontra e 
+retorna o índice do primeiro elemento diferente contido no menor array. 
+Caso nenhuma diferença entre eles seja encontrada, o método retorna -1. 
+Caso quaisquer um dos dois arrays seja nulo, uma NullPointerException será lançada.
+
+Arrays.compare(arr1, arr2) recebe como parâmetro dois arrays de um mesmo tipo. O método compara os dois
+arrays de forma lexicográfica (se os arrays tem o mesmo tamanho e os mesmos elementos nas mesmas 
+posições).
+
+Os tipos de retorno possíveis são:
+
+1 - 0, caso sejam lexicograficamente iguais
+Ex:
+int [] arr1 = {1,2,3};
+int [] arr2 = {1,2,3};
+
+Arrays.compare(arr1, arr2); // retorna 0
+
+2 - < 0 (valor negativo), caso um elemento do primeiro array seja menor que do segundo array
+Ex:
+int [] arr1 = {1,2,3};
+int [] arr2 = {2,2,3};
+
+Arrays.compare(arr1, arr2); // Retorna a subtração do valor encontrado nos índices que contém a diferença, 
+                            // nesse caso, 1 - 2 = -1
+
+3 - > 0 (valor positivo), caso um elemento do primeiro array seja maior que do segundo array
+Ex:
+int [] arr1 = {2,2,3};
+int [] arr2 = {1,2,3}; 
+
+Arrays.compare(arr1, arr2); // Retorna a subtração do valor encontrado nos índices que contém a diferença, 
+                            // nesse caso, 2 - 1 = 1
+
+4 - NullPointerException, caso os dois arrays a serem comparados sejam nulos.
+
+5 - Caso um dos arrays seja nulo e o outro não, uma exception não é lançada. Os arrays são comparados da 
+forma listada anteriormente.
+
+---------------------------------------------------------------------------------------------------------
+
+Na utilização do método Arrays.compare(arr1, arr2), em caso de elementos nulos, temos:
+
+1. Um array nulo é lexicograficamente menor do que um array não nulo:
+
+    Ex1. Se o primeiro array é nulo e o segundo é não nulo, o retorno é -1.
+       E.g., Arrays.compare(null, new String[] {"JAVA"}); retorna -1.
+
+    Ex2. Se o segundo array é nulo e o primeiro array não nulo, o retorno é 1.
+       E.g., Arrays.compare(new String[] {"JAVA"}, null); retorna 1.
+
+    Ex3. Se os dois arrays são nulos, o retorno é 0.
+       E.g., Arrays.compare((String []) null, null); retorna 0.
+
+       
+2. Na comparação de elementos de um array, um elemento nulo é lexicograficamente menor do que um elemento não nulo:
+
+    Ex1. Se um elemento do primeiro array for nulo e o elemento correspondente do segundo array for não 
+    nulo, o retorno é -1.
+       E.g., Arrays.compare(new String[] {null}, new String[] {"JAVA"}); retorna -1.
+
+    Ex2. Se um elemento do segundo array for nulo e o elemento correspondente do primeiro array for não 
+    nulo, o retorno é 0.
+       E.g., Arrays.compare(new String[] {"JAVA"}, new String[] {null}); retorna 1.
+
+    Ex3. Se um elemento do primeiro array for nulo e o elemento correspondente do segundo array também 
+    for nulo, o retorno é 0.
+       Arrays.compare(new String[] {null}, new String[] {null}); retorna 0.
+
+
+3. Se um dos arrays tiver o mesmo prefixo do outro, então o retorno será arr1.length - arr2.length, onde 
+arr1 é o primeiro array e arr2 é o segundo array.
+
+E.g., Arrays.compare(new String[] {"A", "T", "O", "M", "I", "C"}, new String[] {"A", "T", "O", "M"}) 
+retorna 6 - 4, ou seja 2.
+
+---------------------------------------------------------------------------------------------------------
+
+Arrays.equals pode ter os dois lados igual a null, nenhuma exception é lançada.

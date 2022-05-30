@@ -1,0 +1,72 @@
+Dado o cenário:
+
+public class Test {
+	public static void main(String[] args) {
+		/* INSERT */
+		switch(var) {
+			case 7:
+				System.out.println("Número 7");
+				break;
+			default:
+				System.out.println("Padrão");
+		}
+	}
+}
+
+Mesmo que no lugar de /* INSERT */ venhamos a inserir algo como Character var = 7, a comparação do switch será 
+utilizando um valor inteiro. No caso, são declarações válidas:
+
+Character var = 7;
+Integer var = 7;
+Short var = 7;
+Byte var = 7;
+char var = 7;
+short var = 7
+int var = 7;
+byte var = 7;
+
+Agora, as declarações abaixo seriam inválidas, pois '7' é diferente de 7:
+
+Character var = '7';
+char var = '7';
+
+-------------------------------------------------------------------------------------------------------------------
+
+Expressões switch aceitam os seguintes tipos primitivos: byte, short, int, char. E as seguintes Wrapper classes: 
+Byte, Short, Integer, Character. Além disso também aceitam String e Enums.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    public static void main(String[] args) {
+        int grade = 85;
+        if(grade >= 60)
+            System.out.println("Congratulations");
+            System.out.println("You passed");
+        else
+            System.out.println("You failed");
+ 
+    }
+}
+
+Quando uma estrutura if não tem chaves ao seu redor, apenas a primeira linha após a identação é considerada como 
+parte da estrutura.
+
+Logo, o código acima seria reescrito da seguinte forma:
+
+if (grade >= 60) {
+	System.out.println("Congratulations");
+}
+
+System.out.println("You passed");
+
+else
+	System.out.println("You failed");
+
+
+O que gera um erro de compilação, uma vez que não pode haver instruções de código entre os blocos de if/else.
+
+
+-------------------------------------------------------------------------------------------------------------------

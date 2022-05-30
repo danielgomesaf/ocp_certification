@@ -1,0 +1,94 @@
+Opções do comando jar:
+
+-c or --create: // Cria o arquivo
+
+-f or --file=FILE: // Seta nome do arquivo
+
+// O entry point da aplicação para aplicações standalone deployadas em um arquivo jar modular ou executável
+-e or --main-class=CLASSNAME:
+
+-C DIR: // Muda o diretório e inclui o arquivo a seguir
+
+Ex:
+Dado o comando jar:
+
+C:\>jar -cfe jars\messages.jar com.test.ocp1.Test -C bin\messages .
+
+// O comando cria um novo arquivo chamado 'jars\messages.jar' e seta como entrypoint a classe 
+// 'com.test.ocp1.Test'.
+
+jar -cfe jars\messages.jar com.test.ocp1.Test
+
+// Instrui a mudar o jar para o diretório 'bin\messages' e coloca todos os arquivos compilados nesse diretório 
+// dentro do jar.
+
+-C bin\messages . 
+
+-------------------------------------------------------------------------------------------------------------------
+
+Não existe meio de forçar a JVM a fazer o Garbage Collector. O máximo que podemos fazer é invocar os métodos 
+Runtime.getRuntime().gc(); e System.gc(), que realizam uma requisição para a JVM executar o GB, mas não é garantido.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Util {
+    public static void main(String [] args) {
+        System.out.println(args[0] + args[1]);
+    }
+}
+
+E a execução do comando no prompt:
+
+java --source 11 Util.txt 10 20
+
+Quando passamos para o comando um arquivo com a extensão .java, o comando considera que o arquivo passado é um 
+programa 'single-file source code'. Mas se passarmos qualquer outro arquivo, como no cenário acima, ele considera 
+que o nome do arquivo é o nome da classe Java.
+
+No caso acima, se tentassemos executar o comando 'java Util.txt 10 20', o comando java iria procurar por uma classe 
+com o nome Util.txt e iria lançar um erro "Error: Could not find or load main class Util.txt. Caused by: 
+java.lang.ClassNotFoundException: Util.txt".
+
+Como o arquivo não tem a extensão .java, devemos usar a opção --source no comando java, para que ele seja forçado a 
+usar o source-file mode.
+
+O comando `java --source 11 Util.txt 10 20` instrui o comando java a processar o arquivo Util.txt como um source 
+code Java 11.
+
+-------------------------------------------------------------------------------------------------------------------
+
+A partir da JDK 11 é possível executar programas em single-file.
+
+Se executarmos o comando 'java --help', podemos encontrar a opção que foi adicionada para o java 11:
+
+java [options] <sourcefile> [args]
+
+    (Para executar programas single source-file)
+
+Um programa single-file é um programa composto de um arquivo que contém todo o source code do programa, e é útil 
+para fins de estudo.
+
+No exemplo abaixo, o efeito do comando 'java Animal.java' é que o source file é compilado na memória, e a primeira 
+classe encontrada no source file é executada. No caso, executar o comando 'java Animal.java' é equivalente (mas não 
+igual) a executar os comandos 'javac -d <memory> Animal.java' e 'java -cp <memory> Cat'.
+
+// Arquivo de nome Animal.java
+
+class Cat {
+	public static void main(String[] args) {
+		System.out.print("cat");
+	}
+}
+
+class Dog {
+	public static void main(String[] args) {
+		System.out.print("dog");
+	}
+}
+
+Um source-file pode conter múltiplas classes (mesmo classes public) mas a primeira classe encontrada deve conter o 
+método main com a assinatura 'public static void main(String[] args)'.
+
+-------------------------------------------------------------------------------------------------------------------

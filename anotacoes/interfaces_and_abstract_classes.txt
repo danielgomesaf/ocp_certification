@@ -1,0 +1,215 @@
+Variáveis declaradas em interfaces são implicitamente public, static e final.
+Ex:
+
+interface Printable {
+	public static final int teste1 = 1; // válido
+	public final int teste2 = 2; 		// válido, implicitamente static
+	int teste3 = 3;						// válido, implicitamente public, static e final
+}
+
+-------------------------------------------------------------------------------------------------------
+
+A partir do Java 8, métodos static e default foram permitidos em interfaces. 
+A partir do Java 9, métodos private foram inseridos em interfaces. 
+Um método que seja default não pode ser private.
+
+Ex:
+
+interface Printable {
+	default void teste() {} // válido
+
+	static void teste2() {} // válido
+
+	private default void teste3() {} // inválido
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Interfaces são implicitamente abstract em java, logo a utilização da keyword abstract não causa erros.
+Ex:
+
+public abstract interface Printable {} // É uma declaração válida
+
+-------------------------------------------------------------------------------------------------------
+
+Para métodos abstratos da interface, apenas o modificador public pode ser utilizado.
+Ex:
+
+interface Printable {
+	protected void teste(); // inválido
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Uma classe abstrata que implemente uma interface não precisa implementar seus métodos, uma vez que o 
+método de uma interface é implicitamente abstrato, e uma classe abstrata pode ter 0 ou mais métodos 
+abstratos.
+Ex:
+
+interface Printable {
+	public void setMargin();
+	public void setOrientation();
+}
+
+abstract class Paper implements Printable {
+	public void setMargin() { // alguma implementação }
+
+	// não é necessário implementar o método setOrientation()
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+//Profitable1.java
+package com.udayankhattry.ocp1;
+ 
+public interface Profitable1 {
+    default double profit() {
+        return 12.5;
+    }
+}
+
+//Profitable2.java
+package com.udayankhattry.ocp1;
+ 
+public interface Profitable2 {
+    default double profit() {
+        return 25.5;
+    }
+}
+
+//Profit.java
+package com.udayankhattry.ocp1;
+ 
+public abstract class Profit implements Profitable1, Profitable2 {
+    /*INSERT*/
+}
+
+Existe um erro de compilação nesse código. O compilador reclama de métodos duplicados na classe abstrata 
+Profit, uma vez que ela está herdando métodos com o mesmo nome de duas interfaces diferentes, 
+Profitable1.profit() e Profitable2.profit(). Para que esse problema seja resolvido, uma sobrescrita do 
+método profit() é necessária na classe abstrata Profit.
+
+A palavra-chave default para métodos só é permitida em interfaces, e métodos default são implicitamente 
+public, logo a sobrescrita do método na classe abstrata deve ser public e não conter a palavra-chave 
+default.
+
+Para invocarmos o método default original no método que está sendo sobrescrito, utilizamos a seguinte 
+sintaxe: [NOME_DA_INTERFACE].super.[NOME_DO_METODO].
+
+Portanto, no caso acima, Profitable1.super.profit() chama o método profit() da interface Profitable1 e 
+Profitable2.super.profit() chama o método profit() da interface Profitable2.
+
+Para que o erro de compilação acima seja corrigido, basta usarmos uma das duas implementações abaixo:
+
+public double profit() {
+	return Profitable1.super.profit();
+}
+ou
+public double profit() {
+	return Profitable2.super.profit();
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Uma interface que herde outra interface que seja funcional e possua o seu próprio método abstrato NÃO 
+SERÁ uma interface funcional, uma vez que ela herdará o método abstrato da interface pai, deixando-a com 
+DOIS MÉTODOS ABSTRATOS.
+Ex:
+
+// interface funcional
+Interface I1 {
+	void test1();
+}
+
+// Não é uma interface funcional, uma vez que além do seu próprio método abstrato, ela herda o método 
+// abstrato da classe pai
+Interface I2 extends I1 {
+	void test2();
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Caso uma interface tenha um método default e outra interface a estenda e crie um método igual 
+(mesma assinatura, nome, tipo de retorno e parâmetros), e uma classe não abstrata estenda a segunda 
+interface, a implementação do método da segunda interface será obrigatória pela classe.
+Ex:
+
+interface Document {
+  default String getType() {
+	return "default";
+  }
+}
+
+interface WordDocument extends Document {
+  String getType();
+}
+
+class Word implements WordDocument {
+	// implementação de getType de WordDocument será obrigatória
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Métodos estáticos em uma interface só podem ser acessados via utilização da referência da Interface, 
+nunca pela instância. Logo, um método estático de uma interface não pode ser sobrescrito pela classe que 
+a implementa, e também não pode ser utilizado com instancias da classe e nem com referência da classe.
+Ex:
+
+interface Buyable {
+  public static String test() {
+    return "test";
+  }
+}
+
+class Book implements Buyable {}
+
+Buyable b = null;
+b.test();			// Correto
+
+Buyable.test(); 	// Correto
+Book.test();		// Erro de compilação
+new Book().test(); 	// Erro de compilação
+
+-------------------------------------------------------------------------------------------------------
+
+Para invocarmos campos estáticos, não é necessário termos um objeto. Logo, mesmo que a variável seja nula 
+uma exceção NullPointerException não é lançada ao tentarmos invocar o campo estático.
+
+Ex:
+
+Interface Counter {
+	int ctr = 0; // public, static e final implicitamente
+}
+
+class TestCounter {
+
+	public static void main (String [] args) {
+		Counter c = null;
+		System.out.print(c.ctr); // compila e printa 0.
+	}
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Métodos static e non-static com a mesma assinatura não são permitidos em um escopo.
+Ex:
+
+Interface I1 {
+	default void teste() {
+		System.out.print("método teste na interface");
+	}
+}
+
+abstract class AI {
+	static void teste() {
+		System.out.print("método teste na classe abstrata");
+	} 
+}
+
+class Teste extends AI implements I1  {
+	// existe um erro de compilação, pois a interface possui um método teste() não estático que é 
+	// herdado pela classe Teste, enquanto a classe abstrata tem um método static com a mesma assinatura 
+	// que também é herdado pela classe Teste
+}

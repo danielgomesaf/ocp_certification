@@ -1,0 +1,114 @@
+É necessário que o array possua a tipagem do lado direito da declaração caso usemos var. Caso contrário 
+recebemos erro de compilação.
+Ex:
+var arr1 = new int[]; // compila
+var arr2 = {10,11,12}; // não compila
+
+--------------------------------------------------------------------------------------------------------
+
+Dado o cenário, as variáveis m e n são implicitamente tipadas como inteiros:
+
+var m = 10;
+var n = 20;
+
+Logo:
+
+int sum1 = m + n; // sem erros
+long sum2 = m + n // sem erros
+var sum3 = m + n  // sem erros
+
+short sum4 = m + n // erro de compilação, um cast explícito deve ser feito na soma para poder armazenar 
+                   // em short
+
+byte sum4 = m + n // erro de compilação, um cast explícito deve ser feito na soma para poder armazenar 
+                  // em byte
+
+--------------------------------------------------------------------------------------------------------
+
+A palavra chave var não é permitida seguida de [].
+Ex:
+var [] arr1 = new String[2]; // não compila
+var arr1 = new String[2];    // compila
+
+--------------------------------------------------------------------------------------------------------
+
+Declaração e inicialização de variáveis usando var devem ser feitas em uma declaração.
+Ex:
+var num; num = 10; // não compila
+var num = 10;      // compila
+
+--------------------------------------------------------------------------------------------------------
+
+Não é possível inicializar variáveis declaradas com var como null.
+Ex:
+var teste = null; // não compila
+var teste = ""; // compila
+
+--------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    public static void main(String [] args) {
+        var x = 7.85; //Line n1
+        var y = 5.25f; //Line n2
+        var a = (int)x + (int)y; //Line n3
+        var b = (int)(x + y); //Line n4
+        System.out.println(a + b);
+    }
+}
+
+Resolvemos a expressão da seguinte forma:
+
+Na Line n1, x é inferido para o tipo double com valor 7.85.
+Na Line n2, y é inferido para o tipo float, como valor 5.25f.
+
+Na Line n3:
+
+var a = (int)x + (int)y;
+var a = (int)7.85 + (int)5.25;
+var a = 7 + 5; // realizamos a conversão dos valores para int, sempre arredondando para baixo.
+var a = 12; // infere o valor 12 para um tipo inteiro.
+
+Na Line n4:
+
+var b = (int)(x + y);
+var b = (int)(7.85 + 5.25); // realiza-se a soma dos valores primeiro, uma vez que está entre parênteses
+var b = (int)(13.10); // realiza-se a conversão da soma para o tipo inteiro, arredondando para baixo.
+var b = 13; // infere o valor 13 para um tipo inteiro
+
+System.out.println(a + b); // printa 25 no console.
+
+--------------------------------------------------------------------------------------------------------
+
+Ao declaramos listas com o uso da tipificação implícita (usando "var"), podemos declarar o ArrayList, 
+por exemplo, sem um tipo. A inicialização será de um ArrayList de Objects.
+Ex:
+var list = new ArrayList<>(); // compila normalmente, inicializando um ArrayList<Object>();
+
+--------------------------------------------------------------------------------------------------------
+
+Como o nome sugere, a inferência de tipo de variáveis locais (Local Type Inference - utilização do var 
+para implicitamente tipar variáveis locais) é aplicável apenas para variáveis locais, e nunca para 
+variáveis de instância ou variáveis de classe.
+
+var também não pode ser usado para armazenar lambdas ou métodos de referência.
+
+O identificador var não é uma keyword, logo pode ser utilizado como nome de variáveis, métodos ou 
+pacotes, mas não pode ser usado como nome de classes ou interfaces.
+Ex:
+
+public class Test {
+    private var place = "Unknown";  // Não compila, variável de instância/classe
+    public static final var DISTANCE = 200; // Não compila, variável de instância/classe
+    
+    public static void main(String[] args) {
+        var list1 = new ArrayList<>(); // compila, inicializa uma ArrayList de Objects
+        
+        var list2 = new ArrayList(); // compila, inicializa uma ArrayList de Objects
+        
+        var lambda1 = () -> System.out.println("Hello"); // Não compila, var não pode ser usado para armazenar expressões lambda
+        
+        var var = 100; // compila, var não é uma keyword, pode ser usado para nomear variáveis
+    }
+}

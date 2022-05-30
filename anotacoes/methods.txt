@@ -1,0 +1,150 @@
+Em termos de sobrescrita de métodos, existem duas regras quando aos tipos de retorno:
+
+1 - Se o tipo de retorno do método sendo sobrescrito é primitivo, então o método que o está sobrescrevendo deve 
+usar o mesmo tipo primitivo;
+
+2 - Se o tipo de retorno do método sendo sobrescrito é um tipo de referência, então o método que o está 
+sobrescrevendo pode usar o mesmo tipo de referência ou quaisquer sub-tipos dele (o que é conhecido como covariant 
+return).
+
+-------------------------------------------------------------------------------------------------------------------
+
+Métodos que recebem como parâmetro uma Wrapper class tem prioridade em cima de métodos que recebem o tipo primitivo 
+seguido de ... quando passamos apenas um parâmetro para ele.
+Ex:
+
+Dado o cenário:
+
+class Car {
+    void speed(Byte b) {
+        System.out.println("AAA");
+    }
+    
+    void speed (byte... bytes) {
+        System.out.println("BBB");
+    }
+}
+
+Se chamamos o método com:
+
+new Car().speed(10);
+
+Ele chamará o método com a Wrapper Class.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Se possuirmos uma sobrecarga de métodos em que os parâmetros sejam de diferentes classes que pertençam a uma 
+estrutura de herança, e chamar esse método passando null, o método invocado será o da classe localizada na parte 
+mais baixa da herança (na maior especificação possível).
+Ex:
+
+static void m1(Object o) {}
+static void m1(CharSequence cs) {}
+static void m1(String s) {}
+
+m1(null); // a chamada será realizada para o método que recebe String como parâmetro
+
+Caso haja outro método chamado m1 recebendo como parâmetro um objeto que não pertença a hierarquia de herança, um 
+erro de compilação será gerado, pois o compilador não irá saber qual método chamar.
+Ex:
+
+static void m1(Object o) {}
+static void m1(CharSequence cs) {}
+static void m1(String s) {}
+static void m1(StringBuilder sb) {} // não pertence a hierarquia de herança das anteriores
+
+m1(null); // causa erro de compilação
+
+-------------------------------------------------------------------------------------------------------------------
+
+São estruturas válidas do método especial main():
+
+public static void main(String[] args) {}
+
+public static void main(String... args) {}
+
+static public void main(String[] args) {}
+
+static public void main(String... args) {}
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+class Report {
+    public String generateReport() {
+        return "CSV";
+    }
+    
+    public Object generateReport() {
+        return "XLSX";
+    }
+}
+
+Os dois métodos da classe Report tem a mesma assinatura, ou seja, seu nome e parâmetros são iguais.
+
+Apenas ter o tipo de retorno diferente não caracteriza uma sobrescrita de método correta, portanto, o compilador 
+reclama de um método duplicado chamado generateReport() na classe Report.
+
+-------------------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    private static void m(int i) {
+        System.out.print(1);
+    }
+    
+    private static void m(int i1, int i2) {
+        System.out.print(2);
+    }
+    
+    private static void m(char... args) {
+        System.out.print(3);
+    }
+    
+    public static void main(String... args) {
+        m('A');
+        m('A', 'B');
+        m('A', 'B', 'C');
+        m('A', 'B', 'C', 'D');
+    }
+}
+
+Se o compilador tiver de escolher entre casting implícito e variáveis de argumento, a precedência é do casting 
+implícito, pois a sintaxe de variáveis de argumento foi adicionado no Java 5.
+
+No caso acima:
+
+// chama o método m(int), já que 'A' é um char literal e implicitamente casteado para int.
+m('A');
+
+// chama o método m(int, int), já que 'A' e 'B' são char literais e implicitamente casteados para int.
+m('A', 'B'); 
+
+// chama o método m(char...)
+m('A', 'B', 'C'); 
+
+// chama o método m(char...)
+m('A', 'B', 'C', 'D');
+
+-------------------------------------------------------------------------------------------------------------------
+
+Um método estático só pode acessar membros estáticos (variáveis e outros métodos).
+
+Um método de instância pode acessar membros de instância ou membros estáticos.
+
+Um método estático de uma subclasse não pode esconder um método de instância com a mesma assinatura de uma 
+superclasse.
+
+Ex:
+
+class M {
+	public void main(String s) {} // método de instância
+}
+
+class N extends M {
+	public static void main(String s) {} // erro de compilação
+}
+
+-------------------------------------------------------------------------------------------------------------------

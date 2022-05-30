@@ -1,0 +1,104 @@
+A declaração abaixo cria uma lista de Objects.
+
+var list = new ArrayList<>();
+
+Portanto, se tentarmos utilizar métodos estáticos da classe String, como o 
+String.join(delimitador, array), receberemos um erro de compilação, uma vez que não existem métodos 
+dentre as opções que aceitem uma lista de Objects. Os métodos existentes aceitam lista de classes que 
+implementem CharSequence (String, StringBuffer e StringBuilder, por exemplo).
+
+-------------------------------------------------------------------------------------------------------
+
+O retorno do método add(Object o) da interface List retorna um valor booleano true em caso de adição com 
+sucesso e false em caso de falha.
+
+-------------------------------------------------------------------------------------------------------
+
+Ao usarmos o foreach loop ou interator, não podemos utilizar métodos das classes Collection que alterem 
+o tamanho da lista (add(), remove()). Receberemos uma ConcurrentModificationException.
+
+Para contornar esse cenário, podemos usar os métodos equivalentes das classes Iterator ou ListIterator.
+Ex:
+
+public class Test {
+	public static void main(String[] args) {
+		List<String> elementos = new ArrayList<>();
+		elementos.add("elemento1");
+		elementos.add("elemento2");
+		elementos.add("elemento3");
+		elementos.add("elemento4");
+
+		for(String el : elementos) {
+			if (el.equals("elemento1")) {
+				elementos.remove(el); // Lança uma ConcurrentModificationException
+			}
+		}
+
+		Iterator it = elementos.iterator();
+		while (it.hasNext()) {
+			String el = it.next();
+			if (el.equals("elemento1")) {
+				it.remove(el); // compila e funciona normalmente, uma vez que estamos usando o
+					           // objeto it que é do tipo Iterator para invocar o método remove()
+			}
+		}
+	}
+}
+
+-------------------------------------------------------------------------------------------------------
+
+ArrayLists são diferentes de arrays, ainda que por trás dos panos ArrayList use Object[] para armazenar 
+seus elementos.
+
+Existem 2 pontos relacionados a ArrayLists, um deles é a capacidade e o outro é o número real de 
+elementos armazenados na lista, que é retornado pelo método size(). Se ao inicializarmos um ArrayList 
+não passarmos nada no construtor, a capacidade default desse ArrayList é de 10, mas isso não significa 
+que uma instância de ArrayList será criada contendo 10 elementos inicializados como null.
+
+De fato, nesse caso, o método size() irá retornar 0 para essa lista. Essa lista ainda não contém nenhum 
+elemento. Precisamos invocar o método add(x) ou seu método de sobrecarga, add(i, x), para adicionar 
+itens nessa lista. Mesmo que queiramos adicionar valores nulos, ainda precisamos invocar esses métodos.
+
+Outro ponto a se ter consideração: A adição de elementos em um ArrayList deve ser contínua. Se 
+estivermos utilizando o método add(index, elemento) para adicionarmos itens na lista, esse índice deve 
+ser contínuo, não é permitido pular nenhum índice.
+
+Ex:
+
+public class Test {
+	public static void main(String[] args) {
+		List<String> lista = new ArrayList<>(4); // cria uma instância de ArrayList que inicialmente pode 
+                                                 // armazenar 4 itens, mas nesse momento não tem nada 
+                                                 // armazenado nela
+
+		lista.add(0, "String1"); // Adiciona String1 na posição 0 da lista
+
+		lista.add(2, "String2") // Lança uma ArrayOutOfBoundsException, uma vez que a partir desse ponto 
+                                // apenas adições nos índices 0 e 1 serão aceitas. Caso adicionemos no 
+                                // índice 0, o objeto String1 que estava lá será empurrado para a 
+                                // direita, indo para o índice 1.
+	}
+}
+
+-------------------------------------------------------------------------------------------------------
+
+list.remove(null) não lança NullPointerException.
+
+-------------------------------------------------------------------------------------------------------
+
+O método List.of Cria um ArrayList imutável.
+
+-------------------------------------------------------------------------------------------------------
+
+Em ArrayLists, existem dois métodos remove(). 
+
+Um deles recebe o índice como parâmetro e retorna uma String. O outro recebe um Object como parâmetro e 
+retorna um boolean.
+
+-------------------------------------------------------------------------------------------------------
+
+Quando usamos o método clone() em uma collection, apenas esse objeto é clonado. Todos os objetos 
+internos continuam com o mesmo apontamento de refêrencia, ou seja, se alterarmos um valor de um objeto 
+na collection clonada, esse valor será alterado na collection original.
+
+-------------------------------------------------------------------------------------------------------

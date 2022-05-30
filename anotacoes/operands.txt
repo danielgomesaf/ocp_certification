@@ -1,0 +1,239 @@
+Dada a expressão:
+
+boolean res = x++ == 7 && ++x == 9 || x++ == 9;
+
+// Postfix operator has higher precedence than other available operators
+boolean res = (x++) == 7 && ++x == 9 || (x++) == 9; 
+
+//Then comes prefix operators
+boolean res = (x++) == 7 && (++x) == 9 || (x++) == 9; 
+
+//== operator comes next
+boolean res = ((x++) == 7) && ((++x) == 9) || ((x++) == 9); 
+
+//&& has higher precedence over ||
+boolean res = (((x++) == 7) && ((++x) == 9)) || ((x++) == 9); 
+
+Right hand side is left with just one operator '||', it is a binary operator, hence let's solve the left 
+hand side first.
+
+boolean res = ((7 == 7) && ((++x) == 9)) || ((x++) == 9); // x = 8
+
+boolean res = (true && ((++x) == 9)) || ((x++) == 9); // x = 8
+
+boolean res = (true && (9 == 9)) || ((x++) == 9); // x = 9
+
+boolean res = (true && true) || ((x++) == 9); // x = 9
+
+// x = 9, || is a short-circuit operator, given expression evaluates to true without evaluating 
+// `((x++) == 9)`
+boolean res = true || ((x++) == 9); 
+
+boolean res = true; // x = 9
+
+Portanto,
+x = 9
+res = true
+
+--------------------------------------------------------------------------------------------------------
+
+Dada a questão:
+
+String text = "RISE";
+text = text + (text = "ABOVE ");
+
+// O operando + da esquerda é avaliado primeiro, ou seja, text --> "RISE "
+text = "RISE " + (text = "ABOVE "); 
+
+// O operando + da direita é avaliado em seguida, ou seja, text --> "ABOVE "
+text = "RISE " + "ABOVE ";
+
+// A concatenação é efetuada, ou seja, text --> "RISE ABOVE "
+text = "RISE ABOVE ";
+
+--------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+var int[] arr = new int[3];
+
+arr[0] = 10, arr[1] = 20 and arr[2] = 30;
+
+// estão presentes diversos operadores de atribuição, então vamos agrupá-los
+arr[i++] = arr[++i] = 40; 
+
+// Em operadores de atribuição, a associação é feita da direita para a esquerda
+arr[i++] = (arr[++i] = 40); 
+
+// Vamos resolver a expressão. O operando da esquerda é arr[i++] e o operando da direita é 
+// (arr[++i] = 40).
+
+// O operando da esquerda é resolvido primeiro, com a soma ocorrendo em postfix, logo, arr[0] e i = 1
+arr[0] = (arr[++i] = 40); 
+
+// O operando da direita é resolvido, com a soma ocorrendo em suffix e o valor 40 é atribuido a posição 
+// 2 do array arr, logo arr[2], i = 2 e arr[2] = 40
+arr[0] = (arr[2] = 40); 
+
+// Atribuímos o valor de arr[2], que nesse caso é 40, à posição 0 do array arr, logo i = 2, arr[0] = 40.
+arr[0] = 40;
+
+Ao final temos um array composto de {40, 20, 40}
+
+--------------------------------------------------------------------------------------------------------
+
+O operador + tem precedência sobre o operador ==, e o operador + é associativo da esquerda pra direita.
+
+Ex:
+"1" + "2" + "3" == "1" + "2" + "3"
+
+= ("1" + "2") + "3" == "1" + "2" + "3" // primeiro agrupamos os operadores + da esquerda
+
+= ("1" + "2") + "3" == ("1" + "2") + "3" // em seguida, agrupamos os operadores + da direita
+
+= (("1" + "2") + "3") == (("1" + "2") + "3") // por último, agrupamos as expressões do operador ==
+
+Agora podemos resolver a expressão:
+
+// resolvemos da esquerda pra direita. Primeiro concatenamos a expressão ("1" + "2"), ou seja, 
+// ("12" + "3")
+= ("12" + "3") == (("1" + "2") + "3") 
+
+= "123" == (("1" + "2") + "3") // em seguida concatenamos a expressão ("12" + "3"), ou seja, "123"
+
+// agora resolvemos a expressão da direita. Primeiro concatenamos a expressão ("1" + "2"), ou seja, 
+// ("12" + "3")
+= "123" == ("12" + "3")
+
+= "123" == "123" // em seguida concatenamos a expressão ("12" + "3"), ou seja, "123"
+
+// no caso da comparação entre dois literais String usando o ==, o valor é verdadeiro, uma vez que 
+// apontamos para a String contida no String Pool. 
+= true 
+
+--------------------------------------------------------------------------------------------------------
+
+&& e || são short circuit operators. 
+
+ou seja, no caso abaixo ao utilizarmos o &&, casp o lado esquerdo da operação seja avaliado em false, o 
+lado direito sequer é avaliado, e qualquer operação que seja feita nele é desconsiderada, uma vez que 
+numa expressão && caso um lado seja falso, toda a expressão é falsa.
+Ex:
+
+[{2 + (--b)} < 1] && [{(c++) + (d++)} > 1]; // a=2, b=5, c=7, d=9
+
+[{2 + 4} < 1] && [{(c++) + (d++)} > 1]; // a=2, b=4, c=7, d=9
+
+[6 < 1] && [{(c++) + (d++)} > 1];
+
+false && [{(c++) + (d++)} > 1];
+
+o c++, d++ não são atribuidos, mantendo o seu valor inicial.
+
+--------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    public static void main(String [] args) {
+        int i = 2;
+        boolean res = false;
+        res = i++ == 2 || --i == 2 && --i == 2;
+        System.out.println(i);
+    }
+}
+
+Primeiro montamos a expressão de acordo com a precedência de cada operador:
+
+i++ == 2 || --i == 2 && --i == 2; 
+
+// O operador Postfix(i++) tem precedência sobre os outros operadores
+(i++) == 2 || --i == 2 && --i == 2;
+
+// Depois do operador postfix, a precedência é dada ao operador prefix(--i)
+(i++) == 2 || (--i) == 2 && (--i) == 2;
+
+// o operador == tem precedência maior sobre os operadores && and ||. 
+((i++) == 2) || ((--i) == 2) && ((--i) == 2);
+
+// O operador && tem precedência maior sobre ||. 
+((i++) == 2) || (((--i) == 2) && ((--i) == 2));
+
+
+Agora resolvemos a expressão, da esquerda pra direita:
+
+// Aqui começamos a resolver a expressão pelo lado esquerdo, ou seja, i=2, res=false]. 
+((i++) == 2) || (((--i) == 2) && ((--i) == 2));
+
+// Nesse ponto i=3, res = false, mas a comparação (2 == 2) é feita ainda com o valor antigo de i. 
+(2 == 2) || (((--i) == 2) && ((--i) == 2)); 
+
+// como || é um operador short-circuit, e o seu valor é true, não há necessidade de se avaliar a 
+// expressão da direita, uma vez que em uma operação ||, se um lado é verdadeiro, toda a expressão é 
+// verdadeira. Logo i = 3 e res = false
+true || (((--i) == 2) && ((--i) == 2)); [i=3, res=false].  
+
+O valor 3 é printado no console.
+
+--------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    public static void main(String [] args) {
+        boolean flag = false;
+        System.out.println((flag = true) | (flag = false) || (flag = true));
+        System.out.println(flag);
+    }
+}
+
+Vamos resolver a expressão:
+
+System.out.println((flag = true) | (flag = false) || (flag = true)); // flag = false
+
+// O operador bitwise inclusive OR | tem precedência sobre o operador lógico OR ||
+System.out.println(((flag = true) | (flag = false)) || (flag = true)); 
+
+// A expressão || tem dois operandos, o da esquerda: ((flag = true) | (flag = false)) e o da direita: 
+// (flag = true). O operando da esquerda precisa ser avaliado primeiro.
+
+System.out.println((true | (flag = false)) || (flag = true)); // flag = true
+
+System.out.println((true | false) || (flag = true)); // flag = false
+
+System.out.println(true || (flag = true)); // flag = false
+
+Logo, a linha acima printa true no console. Porém, a variável flag mantém-se como false.
+
+--------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+ 
+public class Test {
+    public static void main(String [] args) {
+        int a = 1000;
+        System.out.println(-a++);
+    }
+}
+
+Existem 2 operadores envolvidos, o unary minus (-) e o Postfix (++).
+
+-a++; [a = 1000]. 
+
+// Postfix tem uma precedência maior do que o unary.
+-(a++); [a = 1000] 
+
+// Aqui usamos o valor (1000) para aplicarmos ao operador unary minus e somente depois disso aplicamos a soma de + 1
+-(1000); [a = 1001]
+
+// o valor -1000 é printado no console.
+-1000; [a = 1001]
+
+--------------------------------------------------------------------------------------------------------
+
+O operador dot (.) tem precedência sobre operações de cast.
+Ex:
+
+(Lock) padlock.open(); // Primeiro o método .open() é chamado e o resultado é utilizado na tentativa de cast.
+
+--------------------------------------------------------------------------------------------------------

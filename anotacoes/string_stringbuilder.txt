@@ -1,0 +1,337 @@
+Strings criadas por concatenação em tempo de compilação irão fazer referências a Strings contidas no 
+String Pool durante a execução.
+Concatenação em tempo de compilação acontece quando os operandos são constantes como literais, 
+variáveis finais, etc.
+
+Ex:
+	// "teste" + "" é uma expressão constante, já que os dois operandos são 
+    // Strings literais , o que significa que essa expressão é computada em 
+    // tempo de compilação e resulta em um literal "teste", que será 
+    // referenciado em tempo de execução usando a String Pool.
+
+    String s2 = "teste" + "";
+
+Quando comparamos dois literais, sendo um deles ou os dois concatenados em tempo de compilação usando o 
+operador ==, temos um resultado verdadeiro, já que ambos apontam para o objeto String que está no String
+Pool.
+
+Ex:
+	String s1 = "teste";
+	String s2 = "teste" + "";
+
+	s1 == s2 // a resposta é true
+
+Caso tenhamos um dos operandos concatenados em tempo de execução, ou seja, se o resultado não for uma 
+expressão constante, uma nova string é criada, o que resulta em apontamentos distintos.
+
+Ex:
+	String s1 = "teste"; // Aponta para um objeto String criado na memória HEAP
+	String s2 = str + ""; // Aponta diretamente para o objeto String armazenado no String Pool.
+
+	s1 == s2 // a resposta é false 
+
+-------------------------------------------------------------------------------------------------------
+
+Ao inicializar uma instância de StringBuilder com new StringBuilder(100), por exemplo, uma instância de 
+StringBuilder é criada com um array interno de chars de tamanho 100, porém o método length() do objeto 
+StringBuilder retorna o número de caracteres armazenados dentro do array interno. Ou seja, nesse caso, 
+o método length() retornará 0.
+
+-------------------------------------------------------------------------------------------------------
+
+No método String.join(delimitador, array), caso o delimitador ou o array sejam nulos, uma 
+NullPointerException será lançada. 
+
+No método String.join(delimitador, elemento), caso o elemento seja apenas um String (não um array), e 
+caso o elemento seja nulo, a execução do método será normal.
+Ex:
+
+String str = null; 
+String.join("-", str); // retorna "null", como String
+
+String.join("::", new String[] {"James", null, "Gosling"}); // retorna "James::null::Gosling"
+
+No método String.join(delimitador, Iterable<? extends CharSequence>), caso o delimitador ou o objeto 
+iterator seja nulo, uma NullPointerException será lançada. Porém, caso algum elemento da lista seja 
+nulo, a execução do método será normal.
+
+Ex:
+String.join(null, List.of("HELLO")); // Lança uma NullPointerException
+
+List<String> list = null; 
+String.join("-", list); // Lança uma NullPointerException
+
+List<String> list = new ArrayList<>(); 
+list.add("A"); 
+list.add(null); 
+String.join("::", list); // retorna "A::null"
+
+Em caso de uma chamada da forma String.join("-", null), um erro de compilação será gerado, pois o 
+compilador não saberá qual método .join() chamar, uma vez que na classe String existem sobrecargas desse
+método que recebem diferentes interfaces/classes como parâmetro.
+
+-------------------------------------------------------------------------------------------------------
+
+O método int indexOf(String str, int fromIndex) da classe String retorna o índice da primeira ocorrência 
+de str a partir de uma substring criada a partir da String principal, iniciando do fromIndex, 
+inclusivamente.
+
+Ex:
+
+// Checa o índice da primeira ocorrência de "a" na String "alaska", 
+// porém percorrendo somente os caracteres a partir do índice 1 
+// (no caso, a substring "laska") ou seja, retorna o índice 2 
+// (alaska -> a=0, l=1, a=2)
+
+"alaska".indexOf("a", 1);
+
+// Checa o índice da primeira ocorrência de "a" na String "alaska", porém 
+// percorrendo somente os caracteres a partir do índice 2 
+// (no caso, a substring "aska") ou seja, retorna o índice 2 
+// (alaska -> a=0, l=1, a=2)
+
+"alaska".indexOf("a", 2) ;
+
+
+// Checa o índice da primeira ocorrência de "a" na String "alaska", 
+// porém percorrendo somente os caracteres a partir do índice 3 
+// (no caso, a substring "ska") ou seja, retorna o índice 5 
+// (alaska -> a=0, l=1, a=2, s=3, k=4, a=5)
+
+"alaska".indexOf("a", 3); 
+
+-------------------------------------------------------------------------------------------------------
+
+O método strip() da classe String (disponível a partir do Java 11) retorna uma nova String em que o seu 
+valor é a mesma String com os espaços em branco na frente e atrás são removidos.
+
+Dado o exemplo abaixo:
+
+class TestStrip {
+	public static void main(String[] args) {
+		
+        // Nesse ponto, criamos um objeto StringBuilder com o valor 
+        // {'E','L','E','C','T','R','O','T','H','E','R','M','A,'L'}. O tamanho desse objeto é 14.
+        
+        StringBuilder sb = new StringBuilder("ELECTROTHERMAL");
+		
+         // Aqui setamos o tamanho do objeto sb para 7, ou seja, reduzimos o tamanho em 
+        // 7 posições a partir do primeiro índice. O resultado final do valor desse 
+        // objeto fica em {'E','L','E','C','T','R','O'}
+        
+        sb.setLength(7);
+
+        // Nesse ponto, o método toString() retorna o 
+        // valor "ELECTRO", e o método strip() não altera a String, já que não existem espaços em 
+        // branco no início ou no fim dela. O valor printado no console é "ELECTRO:"
+		
+        System.out.print(sb.toString().strip() + ":"); 
+
+        // O tamanho do objeto sb é modificado novamente para 14, ou seja, 7 posições são adicionadas as 
+        // 7 que existiam antes. Porém, os valores adicionados são valores de caracteres '\u0000', que 
+        // representam caracteres vazios. O valor final desse objeto nesse ponto do código fica em 
+        // {'E','L','E','C','T','R','O','\u0000','\u0000','\u0000','\u0000','\u0000','\u0000,'\u0000'}
+		
+        sb.setLength(14); 
+
+		// A execução do método toString() do objeto sb retornará um valor correspondente a "ELECTRO". 
+        // E após a execução do método strip(), os espaços ao fim da String serão removidos. Logo o 
+        // valor printado em console será "ELECTRO". O valor final exibido no console será 
+        // "ELECTRO:ELECTRO"
+        
+        System.out.print(sb.toString().strip()); 
+    }
+}
+
+-------------------------------------------------------------------------------------------------------
+
+Ao invocarmos o método append(String s) de um StringBuilder passando uma String vazia, o tamanho do 
+StringBuilder não é alterado.
+
+Ex:
+StringBuilder sb = new StringBuilder("teste");
+
+sb.length(); // valor igual a 5.
+
+sb.append("");
+
+sb.length(); // mesmo valor, 5.
+
+-------------------------------------------------------------------------------------------------------
+
+Dado os cenários de invocação do método String.join(delimitador, array):
+
+// Elementos do array que sejam null são convertidos para String com o valor "null". No caso abaixo, o 
+// resultado seria "1.null::null".
+
+String [] arr1 = {null, null};
+System.out.println("1. " + String.join("::", arr1));
+
+
+// Um array vazio de Strings é considerado como contendo "". No caso abaixo, o resultado seria "2.".
+
+String [] arr2 = {};
+System.out.println("2. " + String.join("-", arr2));
+
+// Quando o valor nulo é atribuído a uma variável array e passado para o método String.join(d, a) é nulo, 
+// o código compila corretamente, mas uma NullPointerException é lançada em tempo de execução.
+
+String [] arr3 = null;
+System.out.println("3. " + String.join(".", arr3));
+
+// Quando nulo é passado diretamente como argumento array para o método String.join(d, a), um erro de 
+// compilação é gerado, uma vez que existem sobrecargas desse método que aceitam diferentes tipos de 
+// objeto, e o compilador não saberia qual invocar.
+
+System.out.println("4. " + String.join(".", null));
+
+-------------------------------------------------------------------------------------------------------
+
+Dado o seguinte cenário:
+
+public class Test {
+    public static void main(String[] args) {
+        final int i1 = 1;
+        final Integer i2 = 1;
+        final String s1 = ":ONE";
+        
+        String str1 = i1 + s1;
+        String str2 = i2 + s1;
+        
+        System.out.println(str1 == "1:ONE");
+        System.out.println(str2 == "1:ONE");
+    }
+}
+
+Strings que sejam computadas por concatenação em tempo de compilação irão apontar para o String Pool 
+durante a execução. A concatenação em tempo de compilação de uma String acontece quando os dois 
+operandos são constantes em tempo de compilação, como literais, variáveis final, etc.
+
+Já Strings computadas por concatenação em tempo de execução (caso o resultado da concatenação não seja 
+uma constante) são criadas apontando para novas referências na memória HEAP, e portanto, distintas.
+
+No cenário acima temos String str1 = i1 + s1. i1 é uma variável final do tipo int e s1 é uma variável 
+final do tipo String. Logo, a concatenação entre elas é uma expressão constante em tempo de compilação, 
+o que resulta no literal "1.ONE".
+
+Isso significa que, durante a compilação, o compilador irá transformar a expressão:
+
+String str1 = i1 + s1;
+para
+String str1 = "1:ONE";
+
+Como "1:ONE" é uma String literal, então em tempo de execução o apontamento irá acontecer diretamente 
+para o String Pool.
+
+Já no caso da expressão String str2 = i2 + s1, 'i2 + s1' não é uma expressão constante, pois i2 não é 
+primitivo ou do tipo String, portanto a computação desse valor ocorre em tempo de execução e retorna 
+uma String não contida no String Pool, de valor "1:ONE".
+
+Como str1 aponta para o objeto "1.ONE" do String Pool, temos o resultado de 'str1 == "1:ONE"' como true.
+
+Como str2 aponta para o objeto "1.ONE" que não está contido no String Pool, temos o resultado de 
+'str2 == "1:ONE"' como false.
+
+-------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+public class Test {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder(5);
+        sb.append("0123456789");
+        sb.delete(8, 1000);
+        System.out.println(sb);
+    }
+}
+
+`new StringBuilder(5);` cria uma instância de StringBuilder cujo tamanho do array de chars interno é 5, 
+porém, esse tamanho é ajustado quando caracteres são adicionados/removidos da instância do StringBuilder. 
+`sb.append("0123456789");` adiciona com sucesso a String "0123456789" à instância sb.
+
+O método delete(s, e) aceita dois parâmetros: delete(int start, int end), em que start é inclusivo e end 
+é exclusivo.
+
+Esse método estoura uma StringIndexOutOfBoundsException nos seguintes cenários:
+A. start é negativo;
+B. start é maior do que sb.length();
+C. start é maior que end;
+
+Caso end seja maior do que o tamanho do objeto StringBuilder, o valor de end é setado como o novo 
+tamanho do objeto StringBuilder, portanto, não é lançada uma StringIndexOutOfBoundsException.
+
+No caso do cenário acima, `sb.delete(8, 1000);` é equivalente a 'sb.delete(8, sb.length())', o que 
+resulta na deleção dos caracteres a partir do 8th índice, ou seja, os caracteres 8 e 9 da String 
+"0123456789".
+
+Portanto, o valor printado ao final será "01234567".
+
+-------------------------------------------------------------------------------------------------------
+
+A classe StringBuilder não sobrescreve o método equals(Object). Logo, ao tentarmos comparar dois objetos 
+StringBuilder, o operador utilizado é o ==.
+
+O construtor new StringBuilder(Number) cria uma instânica com uma capacidade inicial (tamanho do array 
+de char interno) de X. Essa capacidade não é fixa e adicionar ou remover caracteres modifica essa 
+capacidade.
+
+O método setLength(Number) da classe StringBuilder seta o número de caracteres existentes dentro do seu 
+array interno de chars.
+
+Ex:
+StringBuilder sb = new StringBuilder("TESTE");
+
+System.out.println(sb.length()); // printa 5
+
+// todos os caracteres presentes após o índice 2 serão removidos e o tamanho da string será reduzido.
+sb.setLength(2); 
+
+System.out.println(sb.length()); // Printa 2
+
+-------------------------------------------------------------------------------------------------------
+
+O método delete(int i, int j) da classe StringBuilder deleta do índice i inclusivamente até o índice j 
+exclusivamente.
+
+Ex:
+StringBuilder sb = new StringBuilder("TESTE");
+sb.delete(0, 1); // Deleta a letra T contida na posição 0 da String, mas não a letra E na posição 1.
+
+-------------------------------------------------------------------------------------------------------
+
+O método insert(int i, String text) da classe StringBuilder insere a String text a partir do índice i 
+inclusivamente, empurrando o resto da String para frente.
+
+Ex:
+StringBuilder sb = new StringBuilder("TESTE");
+sb.insert(0, "TES"); // o resultado será TESTESTE.
+
+-------------------------------------------------------------------------------------------------------
+
+A classe StringBuilder implementa a interface Comparable, logo é possível comparar objetos StringBuilder. 
+Internamente as strings contidas no StringBuilder são comparadas usando seu próprio método equals.
+
+-------------------------------------------------------------------------------------------------------
+
+Os métodos strip(), stripLeading() e stripTrailing() foram adicionados à classe String no Java 11.
+
+-------------------------------------------------------------------------------------------------------
+
+Dado o cenário:
+
+String text = "ONE ";
+
+System.out.println(text.concat(text.concat("ELEVEN ")).trim());
+
+// Ao realizar a execução do método .concat(), como String é um objeto imutável, a variável original 
+// text não é alterada, ou seja, o valor de text nesse momento continua sendo "ONE ".
+System.out.println(text.concat("ONE ELEVEN ").trim()); 
+
+System.out.println(("ONE ONE ELEVEN ").trim());
+
+// o método trim() remove espaços em branco no início e no fim da String
+System.out.println("ONE ONE ELEVEN");
+
+Ao final, o valor "ONE ONE ELEVEN" é printado  no console.
+
+-------------------------------------------------------------------------------------------------------
