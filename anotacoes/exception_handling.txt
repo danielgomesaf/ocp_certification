@@ -133,3 +133,32 @@ ExceptionInInitializerError é uma subclasse da família de Error e só pode ser
 RuntimeException e todas as suas subclasses são unchecked exceptions;
 
 ------------------------------------------------------------------------------------------------------------------
+
+Quando um método possuir uma declaração throws com uma checked Exception, essa mesma Exception ou uma Exception que seja classe pai dela 
+deverá ser capturada e tratada em um bloco try/catch ou relançada no local em que o método for invocado. Caso contrário um erro de compilação
+acontecerá.
+Ex:
+
+class ThrowsException {
+
+    public void print() throws IOException() {
+        // A declaração throws IOException compila normalmente, uma vez que FileNotFoundException é uma classe filha de IOException.
+        throw new FileNotFoundException();
+    }
+}
+
+public class TesteThrowsException {
+    public static void main (String[] args) {
+        ThrowsException te = new ThrowsException();
+
+        try {
+            // Esse método lança uma IOException, ou seja, o bloco try/catch deverá capturar e tratar uma IOException ou uma Exception, que
+            // é classe pai de IOException. No caso apresentado, um erro de compilação acontecerá.
+            te.print();
+        } catch (FileNotFoundException e) {
+
+        }
+    }
+}
+
+------------------------------------------------------------------------------------------------------------------

@@ -152,9 +152,11 @@ class Word implements WordDocument {
 
 -------------------------------------------------------------------------------------------------------
 
-Métodos estáticos em uma interface só podem ser acessados via utilização da referência da Interface, 
-nunca pela instância. Logo, um método estático de uma interface não pode ser sobrescrito pela classe que 
-a implementa, e também não pode ser utilizado com instancias da classe e nem com referência da classe.
+Existem algumas diferenças entre como acessamos variáveis estáticas e métodos estáticos em uma interface.
+
+O único meio de se acessar métodos estáticos em uma interface é via utilização do nome da Interface, nunca pela instância. Logo, um método 
+estático de uma interface não pode ser sobrescrito pela classe que a implementa, e também não pode ser utilizado com instancias da classe e 
+nem com referência da classe.
 Ex:
 
 interface Buyable {
@@ -166,11 +168,41 @@ interface Buyable {
 class Book implements Buyable {}
 
 Buyable b = null;
-b.test();			// Correto
+b.test();			// Errado
 
 Buyable.test(); 	// Correto
 Book.test();		// Erro de compilação
 new Book().test(); 	// Erro de compilação
+
+Já para variáveis estáticas, mesmo que o modo padrão de acesso seja através do nome da interface, também podemos acessar essa variável de 
+outras formas, como referência da interface (mesmo nula), nome de classes que implementem a interface e referências de classes que 
+implementem a interface (mesmo nulas).
+Ex:
+
+interface Buyable {
+  // implicitamente uma variável de instância em uma interface é public, static e final
+  int teste = "";
+}
+
+class Book implements Buyable {}
+
+public class TestVariable {
+	public static void main(String[] args) {
+		// O modo correto e padrão de acessar é pelo nome da interface
+		Buyable.teste;
+
+		// Também podemos acessar por referência da interface, mesmo que null
+		Buyable b = null;
+		b.teste;
+
+		// Podemos acessar pelo nome da classe que implementa a interface
+		Book.teste;
+
+		// Também podemos acessar por referência da classe que implementa a interface, mesmo que null
+		Book b2 = null;
+		b2.teste;
+	}
+}
 
 -------------------------------------------------------------------------------------------------------
 
@@ -213,3 +245,31 @@ class Teste extends AI implements I1  {
 	// herdado pela classe Teste, enquanto a classe abstrata tem um método static com a mesma assinatura 
 	// que também é herdado pela classe Teste
 }
+
+-------------------------------------------------------------------------------------------------------
+
+Quando uma interface que contém um método public não-estático estende uma interface que contém um método com a mesma assinatura, esse método
+é sobrescrito com sucesso. Caso uma classe implemente as duas interfaces, mesmo que haja uma redundância, não há erros de compilação, uma vez
+que a classe irá herdar o método da interface filha.
+Ex:
+
+interface Perishable1 {
+    // Métodos em uma interface são implicitamente públicos, caso nenhum modificador de acesso seja dado
+	default int maxDays() {
+        return 1;
+    }
+}
+ 
+interface Perishable2 extends Perishable1 {
+	// O método maxDays() dessa interface sobrescreve com sucesso o método maxDays() de Perishable1
+    default int maxDays() {
+        return 2;
+    }
+}
+
+class Milk implements Perishable2, Perishable1 {
+	// Apesar de não haver necessidade de implementar a interface Perishable1, uma vez Perishable2 já a estende, não existe conflitos
+	// na classe Milk, já que o método maxDays() herdado será o da interface Perishable2
+}
+
+-------------------------------------------------------------------------------------------------------

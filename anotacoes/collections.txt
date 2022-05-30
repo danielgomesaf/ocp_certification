@@ -92,8 +92,25 @@ O método List.of Cria um ArrayList imutável.
 
 Em ArrayLists, existem dois métodos remove(). 
 
-Um deles recebe o índice como parâmetro e retorna uma String. O outro recebe um Object como parâmetro e 
-retorna um boolean.
+Um deles recebe o índice como parâmetro e retorna uma String (remove(int index)). O outro recebe um Object como parâmetro e 
+retorna um boolean (remove(Object item)).
+
+Um ponto de atenção desses métodos é, por exemplo, ao tentarmos passar um char para o método remove(). Se passarmos um char literal, o 
+compilador irá converter implicitamente o char passado por parâmetro para int, e o método remove(int index) irá ser chamado.
+Para que consigamos chamar o método remove(Object item) para remover um char, temos que realizar o autobox desse valor para a Wrapper class
+Character antes de passarmos por parâmetro.
+Ex:
+
+List<Character> chars = new ArrayList<>();
+list.add('O');
+list.add('A');
+
+// Nesse caso, o compilador irá converter o char 'O' para o seu valor em inteiro, que no caso é 65, o que iria causar uma 
+// ArrayIndexOutOfBoundsException, uma vez que o tamanho da lista é 2
+list.remove('O');
+
+// Nesse caso, ao realizarmos o autobox do valor, o método correto remove(object item) será invocado, removendo o char 'O' da lista
+list.remove(Character.valueOf('O'));
 
 -------------------------------------------------------------------------------------------------------
 

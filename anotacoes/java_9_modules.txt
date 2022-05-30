@@ -191,3 +191,33 @@ mesmo.
 ------------------------------------------------------------------------------------------------------
 
 a JDK 11 não oferece mais um JRE.
+
+------------------------------------------------------------------------------------------------------
+
+Apesar de ser boa prática que os arquivos source code estejam em uma estrutura de pacotes, não é algo obrigatório. Supondo a existência de 
+um arquivo Teste.java dentro de um diretório C://source/tools/com/it/tools, e que o conteúdo dessa classe seja o seguinte:
+
+package com.it.tools.ide;
+ 
+public class Teste {
+}
+
+E supondo a existência de um arquivo de módulo conforme o descrito abaixo, contido em C://source/tools:
+
+module tools {
+    exports com.it.tools.ide;
+}
+
+Podemos perceber que a declaração package da classe não condiz com a localização do arquivo .java. Ao compilarmos esse código com o comando
+javac, o caminho lógico do .class gerado será o caminho definido na declaração package. Podemos ver também que o arquivo de módulo 
+referencia o caminho contido na declaração package da classe Teste e não ao caminho do arquivo fisicamente no diretório.
+Ex:
+
+// Supondo o cenário descrito acima, ao executarmos esse comando, uma estrutura de pastas será criada a partir da pasta classes, contendo
+// os arquivos compilados .class gerados armazenados nas estruturas de pacote. Após a execução do comando, serão gerados dois .class, um
+// para o módulo, contido em classes/source/tools/module-info.class e o outro para a classe, contido em classes/source/tools/com/it/tools/
+// Teste.class
+javac -d classes --module-source-path source -m tools
+
+------------------------------------------------------------------------------------------------------
+

@@ -161,4 +161,16 @@ Integer i = l.get(0);
 // na lista fica com o mesmo valor, pois está apontando para o espaço de memória antigo
 i++;
 
----------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+
+Uma classe pública deverá ter o mesmo nome do arquivo .java em que ela é declarada. Do contrário, o modificador de acesso public não poderá
+ser usado.
+Ex:
+
+// Arquivo Teste.java
+class Teste {
+
+}
+
+public class Teste2 {
+ // Gera um erro ao compilar, uma vez que o nome da classe pública Teste2 não é o mesmo do arquivo Teste.java   
