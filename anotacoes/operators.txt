@@ -259,3 +259,26 @@ assignment	                                = += -= *= /= %= &= ^= |= <<= >>= >>>
 
 --------------------------------------------------------------------------------------------------------
 
+Se utilizarmos o operador instanceof para tentar verificar se um objeto é instância de uma classe que não está relacionada com esse objeto
+em forma de herança, um erro de compilação será gerado.
+Ex:
+
+public class Test {
+    public static void main(String[] args) {
+        Error obj = new Error();
+        
+        // Gera erro de compilação, pois Error não tem relação com RuntimeException
+        boolean flag1 = obj instanceof RuntimeException;
+        
+        // Gera erro de compilação, pois Error não tem relação com Exception
+        boolean flag2 = obj instanceof Exception;
+
+        // flag3 será igual a true, pois obj é uma instância da classe Error
+        boolean flag3 = obj instanceof Error;
+
+        // flag 4 será igual a true, pois Error é uma subclasse de Throwable
+        boolean flag4 = obj instanceof Throwable;
+    }
+}
+
+--------------------------------------------------------------------------------------------------------

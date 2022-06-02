@@ -273,3 +273,52 @@ class Milk implements Perishable2, Perishable1 {
 }
 
 -------------------------------------------------------------------------------------------------------
+
+Dado o cenário abaixo:
+
+//I1.java
+package com.udayankhattry.ocp1;
+ 
+public interface I1 {
+    int i = 10;
+}
+
+
+//I2.java
+package com.udayankhattry.ocp1;
+ 
+public interface I2 {
+    int i = 20;
+}
+
+
+//I3.java
+package com.udayankhattry.ocp1;
+ 
+public interface I3 extends I1, I2 {
+ 
+}
+
+
+//Test.java
+package com.udayankhattry.ocp1;
+ 
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(I1.i);
+        System.out.println(I2.i);
+        
+		// Nesse ponto do código temos uma chamada ambígua, uma vez que o compilador não sabe para qual variável i apontar, se para a de I1
+		// ou para a de I2. Portanto, temos um erro de compilação.
+		System.out.println(I3.i);
+    }
+}
+
+A variável i declarada dentro da interface I1 é implicitamente public, static e final, assim como a variável presente na interface I2.
+
+Variáveis estáticas não são herdadas.
+
+Na linha com a chamada I3.i, temos um erro de compilação devido a uma chamada ambígua. O compilador não saberá qual variável i chamar, se a
+de I1 ou a de I2, já que I3 estende as duas interfaces.
+
+-------------------------------------------------------------------------------------------------------

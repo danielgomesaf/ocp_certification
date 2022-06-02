@@ -362,4 +362,63 @@ target por um novo literal que é passado como parâmetro replacement.
 
 "Java".replace("m", "M") --> Retorna a String source "Java", ou seja, nenhuma alteração é feita.
 
--------------------------------------------------------------------------------------------------------     
+-------------------------------------------------------------------------------------------------------
+
+Na classe String existem 2 métodos split:
+
+1. public String[] split​(String regex, int limit) {...}: 
+
+Retorna um String[] depois de separar a String de acordo com a regex apresentada. O parâmetro limit controla o número de vezes que essa
+regex será aplicada e portanto afeta a length do array resultante.
+
+A. Se limit for positivo, então a regex será aplicada até no máximo (limit - 1) vezes, o tamanho do array resultante não será maior do que 
+limit e a última entrada do array irá conter todo o input além da última ocorrência do delimitador.
+Ex:
+
+"BAZAAR".split("A", 1); retorna ["BAZAAR"] , já que a regex é aplicada 1 - 1 vezes, ou seja 0 vezes.
+
+"BAZAAR".split("A", 2); retorna ["B","ZAAR"] já que a regex é aplicada 2 - 1 vez, ou seja 1 vez.
+
+"BAZAAR".split("A", 3); retorna ["B","Z","AR"] já que a regex é aplicada 3 - 1 vezes, ou seja 2 vezes.
+
+"BAZAAR".split("A", 4); retorna ["B","Z","","R"] já que a regex é aplicada 4 - 1 vezes, ou seja 3 vezes.
+
+"BAZAAR".split("A", 5); retorna ["B","Z","","R"] já que a regex tenta aplicar 5 - 1 vezes, ou seja 4 vezes, mas só é aplicada 3 vezes, pois
+é o valor máximo possível
+
+":".split(":", 2); retorna ["",""] já que a regex é aplicada (2 - 1) vez, ou seja 1 vez, e existe um espaço vazio antes e depois de ":", O
+que resulta em um array contendo duas strings vazias.
+
+
+B. Se limit for zero então a regex será aplicada quantas vezes for possível, o array poderá ter qualquer tamanho e trailing empty Strings
+serão descartadas. Por exemplo:
+
+"BAZAAR".split("A", 0); retorna ["B","Z","","R"].
+
+":".split(":", 0); retorna um array vazio, já que as duas strings vazias vão ser descartadas.
+
+
+C. Se limit for negativo então a regez será aplicada quantas vezes for possível e o array poderá ter qualquer tamanho.
+Ex:
+
+"BAZAAR".split("A", -10); retorna ["B","Z","","R"] já que a regex será aplicada o máximo possível de vezes, que é 3
+
+":".split(":", -2); retorna ["",""] já que a regex será aplicada o máximo possível de vezes, que é 3.
+
+
+
+2. public String[] split​(String regex) {...}: 
+
+Retorna um String[] depois de separar a Strign de acordo com a regex apresentada.
+
+Esse método funciona como se invocássemos o método split(String regex, int limit), passando o valor de limit como 0. Dessa forma, trailing
+empty Strings não são incluídas no array resultante.
+Ex: 
+
+"BAZAAR".split("A"); retorna ["B","Z","","R"] já que essa declaração é equivalente a "BAZAAR".split("A", 0);.
+
+":".split(":"); retorna um array vazio, já que essa declaração é equivalente a ":".split(":", 0);.
+
+-------------------------------------------------------------------------------------------------------
+
+O método reverse() da classe StringBuilder retorna um objeto StringBuilder, não um objeto String.
