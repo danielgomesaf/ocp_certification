@@ -422,3 +422,7 @@ Ex:
 -------------------------------------------------------------------------------------------------------
 
 O método reverse() da classe StringBuilder retorna um objeto StringBuilder, não um objeto String.
+
+-------------------------------------------------------------------------------------------------------
+
+A classe String não contém um método delete().

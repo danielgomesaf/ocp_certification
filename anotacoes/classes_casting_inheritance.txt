@@ -137,15 +137,16 @@ public class Test {
 }
 
 A variável de referência 'b' é do tipo Base, portanto "(Derived) b" não causa erros de compilação. Também não haverá erros de execução do tipo 
-ClassCastException, uma vez que b é nulo. Se b estivesse fazendo referência a uma instância da classe Base (Base b = new Base();), a linha "(Derived) b"
-iria lançar uma ClassCastException.
+ClassCastException, uma vez que b é nulo. Se b estivesse fazendo referência a uma instância da classe Base (Base b = new Base();), a linha 
+"(Derived) b" iria lançar uma ClassCastException.
 
-d.print() nesse caso também não lança NullPointerException, uma vez que o método é estático, portanto, não é necessária uma instância do objeto para que
-ele seja chamado.
+d.print() nesse caso também não lança NullPointerException, uma vez que o método é estático, portanto, não é necessária uma instância do objeto 
+para que ele seja chamado.
 
 -------------------------------------------------------------------------------------------------------------------
 
-Um objeto Integer é imutável, portanto, ao alterar um valor de um objeto Integer, um novo objeto Integer será criado e armazenado em um novo espaço de memória.
+Um objeto Integer é imutável, portanto, ao alterar um valor de um objeto Integer, um novo objeto Integer será criado e armazenado em um novo 
+espaço de memória.
 
 Ex:
 

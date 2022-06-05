@@ -67,6 +67,8 @@ static public void main(String[] args) {}
 
 static public void main(String... args) {}
 
+a palavra-chave void deve vir sempre antes do nome do método.
+
 -------------------------------------------------------------------------------------------------------------------
 
 Dado o cenário:
@@ -83,7 +85,7 @@ class Report {
 
 Os dois métodos da classe Report tem a mesma assinatura, ou seja, seu nome e parâmetros são iguais.
 
-Apenas ter o tipo de retorno diferente não caracteriza uma sobrescrita de método correta, portanto, o compilador 
+Apenas ter o tipo de retorno diferente não caracteriza uma sobrecarga de método correta, portanto, o compilador 
 reclama de um método duplicado chamado generateReport() na classe Report.
 
 -------------------------------------------------------------------------------------------------------------------
